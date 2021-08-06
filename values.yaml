@@ -250,12 +250,12 @@ server:
   # If deployment is on OpenShift, the following block is ignored.
   # In order to expose the service, use the route section below
   ingress:
-    enabled: false
+    enabled: true
     labels: {}
       # traffic: external
-    annotations: {}
-      # |
-      # kubernetes.io/ingress.class: nginx
+    annotations: 
+      |
+      kubernetes.io/ingress.class: nginx-cluster
       # kubernetes.io/tls-acme: "true"
       #   or
       # kubernetes.io/ingress.class: nginx
@@ -265,18 +265,18 @@ server:
     # configure the ingress to point to the Vault active service.
     activeService: true
     hosts:
-      - host: chart-example.local
-        paths: []
+      - host: vault.learning-cicd.com
+        paths: /
     ## Extra paths to prepend to the host configuration. This is useful when working with annotation based services.
     extraPaths: []
     # - path: /*
     #   backend:
     #     serviceName: ssl-redirect
     #     servicePort: use-annotation
-    tls: []
-    #  - secretName: chart-example-tls
-    #    hosts:
-    #      - chart-example.local
+    tls: 
+      - secretName: vault-server-tls
+        hosts:
+          - vault.learning-cicd.com
 
   # OpenShift only - create a route to expose the service
   # The created route will be of type passthrough
@@ -507,7 +507,7 @@ server:
   # /vault/audit
   # See https://www.vaultproject.io/docs/audit/index.html to know more
   auditStorage:
-    enabled: false
+    enabled: true
     # Size of the PVC created
     size: 10Gi
     # Location where the PVC will be mounted.
